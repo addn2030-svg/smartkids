@@ -1,12 +1,14 @@
 {
-  "name": "smartkids",
+  "name": "lamsa-home-physio",
   "version": "1.0.0",
   "private": true,
-  "description": "موقع SmartKids: صفحة المحرك التحليلي (الرنين) + صفحة تواصل مرتبطة بخادم حقيقي",
+  "description": "لمسة — موقع العلاج الطبيعي المنزلي: محرك تحليلي للفجوة + صفحة تواصل مرتبطة بخادم + نسخة صفحة واحدة قابلة للإرسال",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build:share": "node tools/build-share.js",
+    "test": "node tools/test-quiz.js public/assets/gap-check.js && node tools/test-quiz.js public/lamsa-physio.html"
   },
   "engines": {
     "node": ">=18"
