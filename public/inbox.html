@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/styles.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 
@@ -20,16 +20,16 @@
 
 <header class="nav">
   <div class="wrap nav__inner">
-    <a class="brand" href="/index.html">
+    <a class="brand" href="index.html">
       <span class="brand__mark" aria-hidden="true">✦</span>
       <span class="brand__text"><span class="brand__name">SmartKids</span><span class="brand__sub">لوحة الرسائل</span></span>
     </a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="القائمة">☰</button>
     <nav class="nav__links" id="navLinks" aria-label="التنقّل الرئيسي">
-      <a href="/index.html">الرئيسية</a>
-      <a href="/contact.html">تواصل معنا</a>
-      <a href="/inbox.html" class="is-active">لوحة الرسائل</a>
-      <a class="btn btn--primary btn--sm" href="/contact.html">طلب جديد</a>
+      <a href="index.html">الرئيسية</a>
+      <a href="contact.html">تواصل معنا</a>
+      <a href="inbox.html" class="is-active">لوحة الرسائل</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">طلب جديد</a>
     </nav>
   </div>
 </header>
@@ -39,7 +39,7 @@
     <div class="section__head">
       <div class="eyebrow">مربوطة بالخادم مباشرة</div>
       <h1 style="font-size:clamp(25px,3.2vw,38px)">لوحة الرسائل والطلبات</h1>
-      <p class="lead">كل طلب يُرسل من <a href="/contact.html">صفحة التواصل</a> يُخزَّن في <code>data/messages.json</code> ويظهر هنا لحظياً مع رقم تذكرة وحالة.</p>
+      <p class="lead">كل طلب يُرسل من <a href="contact.html">صفحة التواصل</a> يُخزَّن في <code>data/messages.json</code> ويظهر هنا لحظياً مع رقم تذكرة وحالة.</p>
     </div>
 
     <div class="stats" id="stats">
@@ -73,8 +73,8 @@
   <div class="wrap footer__grid">
     <p class="small" style="margin:0">SmartKids — لوحة متابعة الطلبات.</p>
     <nav class="footer__links" aria-label="روابط التذييل">
-      <a href="/index.html">الرئيسية</a>
-      <a href="/contact.html">تواصل</a>
+      <a href="index.html">الرئيسية</a>
+      <a href="contact.html">تواصل</a>
       <a href="/api/health">حالة الخادم</a>
     </nav>
     <p class="tiny" style="margin:0">© <span id="year"></span> SmartKids</p>
@@ -82,6 +82,6 @@
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="/assets/app.js" defer></script>
+<script src="assets/app.js" defer></script>
 </body>
 </html>
