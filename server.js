@@ -165,7 +165,13 @@ const DOMAINS = [
   'حلول أتمتة وبناء أنظمة',
   'أخرى',
 ];
-const REQUEST_TYPES = ['تشخيص سريع (Sensemaking)', 'حملة كاملة (Resonance Loop)', 'نظام متكامل (Integrated System)'];
+const REQUEST_TYPES = [
+  'زيارة تقييم منزلية (60 دقيقة)',
+  'برنامج تأهيل منزلي كامل',
+  'استشارة / متابعة أونلاين',
+  'شراكة تحليلية (للعيادات والمراكز)',
+];
+const SERVICE_MODES = ['زيارة منزلية', 'مراجعة أونلاين', 'عيادة'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function validate(payload) {
@@ -176,6 +182,7 @@ function validate(payload) {
     phone: clean(payload.phone, 40),
     domain: clean(payload.domain, 80),
     requestType: clean(payload.requestType, 80),
+    serviceMode: clean(payload.serviceMode, 40),
     surfaceNoise: clean(payload.surfaceNoise, 300),
     silentPain: clean(payload.silentPain, 1200),
     budget: clean(payload.budget, 60),
@@ -187,6 +194,7 @@ function validate(payload) {
   if (data.silentPain.length < 15) errors.silentPain = 'اشرح الفجوة/الألم الصامت في 15 حرفاً على الأقل.';
   if (!DOMAINS.includes(data.domain)) errors.domain = 'اختر المجال من القائمة.';
   if (data.requestType && !REQUEST_TYPES.includes(data.requestType)) errors.requestType = 'نوع الطلب غير معروف.';
+  if (data.serviceMode && !SERVICE_MODES.includes(data.serviceMode)) errors.serviceMode = 'طريقة الخدمة غير معروفة.';
   if (data.phone && !/^[+\d\s()-]{6,}$/.test(data.phone)) errors.phone = 'رقم الجوال غير صحيح.';
   if (!data.consent) errors.consent = 'يلزم الموافقة على التواصل.';
 
@@ -214,11 +222,11 @@ async function handleApi(req, res, url) {
   }
 
   if (pathname === '/api/health') {
-    return json(res, 200, { ok: true, service: 'smartkids-contact', time: new Date().toISOString(), uptime: Math.round(process.uptime()) });
+    return json(res, 200, { ok: true, service: 'lamsa-contact', time: new Date().toISOString(), uptime: Math.round(process.uptime()) });
   }
 
   if (pathname === '/api/meta') {
-    return json(res, 200, { domains: DOMAINS, requestTypes: REQUEST_TYPES });
+    return json(res, 200, { domains: DOMAINS, requestTypes: REQUEST_TYPES, serviceModes: SERVICE_MODES });
   }
 
   if (pathname === '/api/contact' && req.method === 'POST') {
@@ -279,9 +287,11 @@ async function handleApi(req, res, url) {
     const sorted = all.slice().reverse();
     const byDomain = {};
     const byType = {};
+    const byService = {};
     for (const m of sorted) {
       byDomain[m.domain] = (byDomain[m.domain] || 0) + 1;
       byType[m.requestType || 'غير محدّد'] = (byType[m.requestType || 'غير محدّد'] || 0) + 1;
+      if (m.serviceMode) byService[m.serviceMode] = (byService[m.serviceMode] || 0) + 1;
     }
     return json(res, 200, {
       ok: true,
@@ -290,6 +300,7 @@ async function handleApi(req, res, url) {
         total: (await readMessages()).length,
         byDomain,
         byType,
+        byService,
         lastAt: sorted[0] ? sorted[0].createdAt : null,
       },
       messages: sorted,
@@ -299,7 +310,7 @@ async function handleApi(req, res, url) {
   if (pathname === '/api/export.md' && req.method === 'GET') {
     const all = (await readMessages()).slice().reverse();
     const lines = [
-      '# سجل طلبات التواصل — SmartKids',
+      '# سجل طلبات التواصل — لمسة',
       '',
       `_آخر تحديث: ${new Date().toISOString()} — العدد: ${all.length}_`,
       '',
@@ -313,6 +324,7 @@ async function handleApi(req, res, url) {
         `- **الجوال:** ${m.phone || '—'}`,
         `- **المجال:** ${m.domain}`,
         `- **نوع الطلب:** ${m.requestType || '—'}`,
+        `- **طريقة الخدمة:** ${m.serviceMode || '—'}`,
         `- **الميزانية:** ${m.budget || '—'}`,
         `- **الضجيج على السطح:** ${m.surfaceNoise || '—'}`,
         `- **القلق غير المعلن:** ${m.silentPain}`,
@@ -323,7 +335,7 @@ async function handleApi(req, res, url) {
     res.writeHead(200, {
       'Content-Type': 'text/markdown; charset=utf-8',
       'Content-Length': Buffer.byteLength(body),
-      'Content-Disposition': 'attachment; filename="smartkids-requests.md"',
+      'Content-Disposition': 'attachment; filename="lamsa-requests.md"',
       'Access-Control-Allow-Origin': '*',
     });
     return res.end(body);
@@ -395,7 +407,7 @@ const server = http.createServer(async (req, res) => {
 
 ensureStorage().then(() => {
   server.listen(PORT, HOST, () => {
-    console.log(`SmartKids — الخادم يعمل على http://${HOST}:${PORT}`);
+    console.log(`لمسة — الخادم يعمل على http://${HOST}:${PORT}`);
     console.log(`الرسائل تُخزَّن في: ${MESSAGES_FILE}`);
   });
 });

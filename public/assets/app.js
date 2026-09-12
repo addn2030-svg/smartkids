@@ -11,7 +11,12 @@
 
   const state = {
     domains: ['مجال صحي', 'مجال تقني', 'منصة تعليمية', 'حلول أتمتة وبناء أنظمة', 'أخرى'],
-    requestTypes: ['تشخيص سريع (Sensemaking)', 'حملة كاملة (Resonance Loop)', 'نظام متكامل (Integrated System)'],
+    requestTypes: [
+      'زيارة تقييم منزلية (60 دقيقة)',
+      'برنامج تأهيل منزلي كامل',
+      'استشارة / متابعة أونلاين',
+      'شراكة تحليلية (للعيادات والمراكز)',
+    ],
     lastTicket: null,
     requestTypeChosen: false,
   };
@@ -131,6 +136,7 @@
       ['الأثر على النوم', card.sleep],
       ['الأحمال اليومية', (card.loads || []).join('، ')],
       ['الهدف', card.goal],
+      ['عوائق الوصول للمركز', (card.barriers || []).join('، ')],
       ['القلق غير المعلن', card.silent],
     ].filter(([, v]) => v);
 
@@ -149,6 +155,7 @@
       `شدّة الألم: ${card.severity}/10`,
       card.sleep ? `الأثر على النوم: ${card.sleep}` : null,
       (card.loads || []).length ? `الأحمال اليومية: ${card.loads.join('، ')}` : null,
+      (card.barriers || []).length ? `عوائق الوصول للمركز: ${card.barriers.join('، ')}` : null,
       `الهدف: ${card.goal}`,
     ].filter(Boolean).join(' — ');
 
@@ -162,8 +169,10 @@
     }
     if (!state.requestTypeChosen) {
       const sel = form.querySelector('#requestType');
-      if (sel) sel.value = state.requestTypes[1]; // حملة كاملة (Resonance Loop)
+      if (sel) sel.value = state.requestTypes[0]; // زيارة تقييم منزلية
     }
+    const mode = form.querySelector('#serviceMode');
+    if (mode && !mode.value) mode.value = 'زيارة منزلية';
     form.dataset.hasCard = 'true';
     return true;
   }
@@ -267,12 +276,17 @@
     const domain = params.get('domain');
     const type = params.get('type');
     const noise = params.get('noise');
+    const service = params.get('service');
     if (domain) {
       const opt = Array.from(form.domain.options).find((o) => o.value === domain);
       if (opt) form.domain.value = domain;
     }
     if (type && state.requestTypes.includes(type)) form.requestType.value = type;
     if (noise) form.surfaceNoise.value = noise;
+    if (service === 'زيارة منزلية') {
+      const mode = form.querySelector('#serviceMode');
+      if (mode) mode.value = 'زيارة منزلية';
+    }
   }
 
   function initContactForm() {
@@ -439,7 +453,7 @@
           <span class="msg__id">${escapeHtml(m.id)}</span>
           <span class="badge-status">${escapeHtml(m.status || 'جديدة')}</span>
           <strong>${escapeHtml(m.name)}</strong>
-          <span class="msg__meta">${escapeHtml(m.domain || '—')} · ${escapeHtml(m.requestType || 'غير محدّد')}</span>
+          <span class="msg__meta">${escapeHtml(m.domain || '—')} · ${escapeHtml(m.requestType || 'غير محدّد')}${m.serviceMode ? ` · ${escapeHtml(m.serviceMode)}` : ''}</span>
           <span class="msg__meta" style="margin-inline-start:auto">${escapeHtml(arabicDate(m.createdAt))} (${escapeHtml(relativeTime(m.createdAt))})</span>
         </div>
         <div class="msg__body">

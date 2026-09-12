@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تواصل معنا — SmartKids | ابدأ من الفجوة</title>
+<title>تواصل معنا — لمسة | ابدأ من الفجوة</title>
 <meta name="description" content="صفحة التواصل: أرسل الضجيج الذي ترصده في سوقك، ونعيد إليك باسم القلق غير المعلن ومنه نبني الجسر والحملة (Resonance Loop).">
 <meta name="theme-color" content="#060913">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
   <div class="wrap nav__inner">
     <a class="brand" href="index.html">
       <span class="brand__mark" aria-hidden="true">✦</span>
-      <span class="brand__text"><span class="brand__name">SmartKids</span><span class="brand__sub">صفحة التواصل</span></span>
+      <span class="brand__text"><span class="brand__name">لمسة</span><span class="brand__sub">تواصل وزيارات منزلية</span></span>
     </a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="القائمة">☰</button>
     <nav class="nav__links" id="navLinks" aria-label="التنقّل الرئيسي">
@@ -100,9 +100,20 @@
             <div class="field">
               <label for="requestType">نوع الطلب</label>
               <select id="requestType" name="requestType">
-                <option value="تشخيص سريع (Sensemaking)">تشخيص سريع — فهم وتسمية الفجوة</option>
-                <option value="حملة كاملة (Resonance Loop)">حملة كاملة — الأبواب الأربعة</option>
-                <option value="نظام متكامل (Integrated System)">نظام متكامل — من البداية للنهاية</option>
+                <option value="زيارة تقييم منزلية (60 دقيقة)">زيارة تقييم منزلية — 60 دقيقة</option>
+                <option value="برنامج تأهيل منزلي كامل">برنامج تأهيل منزلي كامل</option>
+                <option value="استشارة / متابعة أونلاين">استشارة / متابعة أونلاين</option>
+                <option value="شراكة تحليلية (للعيادات والمراكز)">شراكة تحليلية (للعيادات والمراكز)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="serviceMode">طريقة الخدمة المفضّلة</label>
+              <select id="serviceMode" name="serviceMode">
+                <option value="">— غير محدّدة —</option>
+                <option value="زيارة منزلية">زيارة منزلية (الأكثر طلباً)</option>
+                <option value="مراجعة أونلاين">مراجعة أونلاين لمتابعة البرنامج</option>
+                <option value="عيادة">عيادة</option>
               </select>
             </div>
 
@@ -178,13 +189,13 @@
               <span class="channel__icon" aria-hidden="true">✉️</span>
               <div>
                 <h4 style="margin:0">البريد الإلكتروني</h4>
-                <a href="mailto:hello@smartkids.sa?subject=%D8%B7%D9%84%D8%A8%20%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%E2%80%94%20SmartKids">hello@smartkids.sa</a>
+                <a href="mailto:hello@lamsa.sa?subject=%D8%B7%D9%84%D8%A8%20%D8%B2%D9%8A%D8%A7%D8%B1%D8%A9%20%E2%80%94%20%D9%84%D9%85%D8%B3%D8%A9">hello@lamsa.sa</a>
               </div>
             </div>
             <div class="channel">
               <span class="channel__icon" aria-hidden="true">💬</span>
               <div>
-                <h4 style="margin:0">واتساب</h4>
+                <h4 style="margin:0">واتساب — زيارات منزلية</h4>
                 <a href="https://wa.me/966500000000" target="_blank" rel="noopener">محادثة فورية</a>
               </div>
             </div>
@@ -221,6 +232,7 @@
               <dt>نوع الطلب</dt><dd data-sum="requestType">—</dd>
               <dt>الاسم</dt><dd data-sum="name">—</dd>
               <dt>البريد</dt><dd data-sum="email">—</dd>
+              <dt>طريقة الخدمة</dt><dd data-sum="serviceMode">—</dd>
               <dt>الضجيج</dt><dd data-sum="surfaceNoise">—</dd>
               <dt>الفجوة</dt><dd data-sum="silentPain">—</dd>
             </dl>
@@ -256,14 +268,14 @@
 
 <footer class="footer">
   <div class="wrap footer__grid">
-    <p class="small" style="margin:0">SmartKids — من الضجيج إلى النواة الصلبة.</p>
+    <p class="small" style="margin:0">لمسة — من الضجيج إلى النواة الصلبة.</p>
     <nav class="footer__links" aria-label="روابط التذييل">
       <a href="index.html">الرئيسية</a>
       <a href="index.html#loop">الخوارزمية</a>
       <a href="inbox.html">لوحة الرسائل</a>
       <a href="/api/export.md">تصدير السجل (Markdown)</a>
     </nav>
-    <p class="tiny" style="margin:0">© <span id="year"></span> SmartKids</p>
+    <p class="tiny" style="margin:0">© <span id="year"></span> لمسة — لمسة تُعيد البسمة</p>
   </div>
 </footer>
 
