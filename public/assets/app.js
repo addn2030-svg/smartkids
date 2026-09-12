@@ -13,6 +13,7 @@
     domains: ['مجال صحي', 'مجال تقني', 'منصة تعليمية', 'حلول أتمتة وبناء أنظمة', 'أخرى'],
     requestTypes: ['تشخيص سريع (Sensemaking)', 'حملة كاملة (Resonance Loop)', 'نظام متكامل (Integrated System)'],
     lastTicket: null,
+    requestTypeChosen: false,
   };
 
   /* ------------------------------- عام ------------------------------- */
@@ -105,7 +106,75 @@
 
   const DRAFT_KEY = 'smartkids:draft';
   const LAST_TICKET_KEY = 'smartkids:lastTicket';
+  const GAP_CARD_KEY = 'smartkids:gapCard';
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  /* -------------------- بطاقة فحص الفجوة (قادمة من physio) -------------------- */
+
+  function readGapCard() {
+    try {
+      return JSON.parse(sessionStorage.getItem(GAP_CARD_KEY) || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  function applyGapCard(form, card) {
+    const box = $('#gapCardBox');
+    const list = $('#gapCardList');
+    if (!box || !list) return false;
+
+    const rows = [
+      ['المنطقة', card.region],
+      ['المدة', card.duration],
+      ['شدّة الألم', `${card.severity}/10`],
+      ['الأثر على النوم', card.sleep],
+      ['الأحمال اليومية', (card.loads || []).join('، ')],
+      ['الهدف', card.goal],
+      ['القلق غير المعلن', card.silent],
+    ].filter(([, v]) => v);
+
+    list.innerHTML = rows
+      .map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`)
+      .join('');
+
+    box.hidden = false;
+
+    const pain = form.querySelector('#silentPain');
+    const noise = form.querySelector('#surfaceNoise');
+    const composed = [
+      `القلق غير المعلن (من فحص الفجوة): ${card.silent}`,
+      `المنطقة: ${card.region}`,
+      `المدة: ${card.duration}`,
+      `شدّة الألم: ${card.severity}/10`,
+      card.sleep ? `الأثر على النوم: ${card.sleep}` : null,
+      (card.loads || []).length ? `الأحمال اليومية: ${card.loads.join('، ')}` : null,
+      `الهدف: ${card.goal}`,
+    ].filter(Boolean).join(' — ');
+
+    if (pain && !pain.value.trim()) {
+      pain.value = composed;
+      pain.dataset.fromCard = 'true';
+    }
+    if (noise && !noise.value.trim() && card.noise) {
+      noise.value = `الضجيج المرصود: ${card.noise}`;
+      noise.dataset.fromCard = 'true';
+    }
+    if (!state.requestTypeChosen) {
+      const sel = form.querySelector('#requestType');
+      if (sel) sel.value = state.requestTypes[1]; // حملة كاملة (Resonance Loop)
+    }
+    form.dataset.hasCard = 'true';
+    return true;
+  }
+
+  function clearGapCard(form) {
+    try { sessionStorage.removeItem(GAP_CARD_KEY); } catch { /* تجاهل */ }
+    $$('[data-from-card="true"]', form).forEach((field) => { field.value = ''; delete field.dataset.fromCard; });
+    const box = $('#gapCardBox');
+    if (box) box.hidden = true;
+    delete form.dataset.hasCard;
+  }
 
   function collectForm(form) {
     const fd = new FormData(form);
@@ -216,6 +285,11 @@
 
     const prefilled = applyQueryPrefill(form, new URL(window.location.href));
     if (!prefilled) restoreDraft(form);
+
+    // بطاقة فحص الفجوة القادمة من صفحة العلاج الطبيعي والتأهيل
+    const gapCard = readGapCard();
+    if (gapCard) applyGapCard(form, gapCard);
+
     updateSummary(form);
 
     form.addEventListener('input', () => {
@@ -226,7 +300,22 @@
         : null;
       if (field) field.classList.remove('has-error');
     });
-    form.addEventListener('change', () => { updateSummary(form); saveDraft(form); });
+    form.addEventListener('change', () => {
+      updateSummary(form);
+      saveDraft(form);
+      if (document.activeElement && document.activeElement.id === 'requestType') {
+        state.requestTypeChosen = true;
+      }
+    });
+
+    const clearCardBtn = $('#gapCardClear');
+    if (clearCardBtn) {
+      clearCardBtn.addEventListener('click', () => {
+        clearGapCard(form);
+        updateSummary(form);
+        toast('أُزيل ملف الحالة من الطلب.', 'ok');
+      });
+    }
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();

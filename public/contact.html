@@ -46,6 +46,22 @@
 
       <!-- ============================ النموذج ============================ -->
       <div class="form-shell">
+        <!-- بطاقة فحص الفجوة: تُعبَّأ تلقائياً عند القدوم من physio.html#gap-check -->
+        <div class="profile-box" id="gapCardBox" hidden>
+          <div class="profile-box__head">
+            <span class="channel__icon" aria-hidden="true">🧭</span>
+            <div>
+              <h4>ملف الحالة — من أداة فحص الفجوة</h4>
+              <p class="tiny muted" style="margin:0">نُقل من <a href="physio.html#gap-check">فحص الفجوة</a> (العلاج الطبيعي والتأهيل). راجعه وعدّله قبل الإرسال — وهو مخرَج تحليلي لا تشخيص طبي.</p>
+            </div>
+          </div>
+          <dl class="summary" id="gapCardList"></dl>
+          <div class="cta-row" style="margin-top:14px">
+            <button class="btn btn--sm btn--ghost" type="button" id="gapCardClear">إزالة الملف</button>
+            <a class="btn btn--sm btn--ghost" href="physio.html#gap-check">إعادة الفحص</a>
+          </div>
+        </div>
+
         <div class="alert alert--err" id="formAlert" role="alert" hidden></div>
 
         <form id="contactForm" novalidate>
@@ -170,6 +186,13 @@
               <div>
                 <h4 style="margin:0">واتساب</h4>
                 <a href="https://wa.me/966500000000" target="_blank" rel="noopener">محادثة فورية</a>
+              </div>
+            </div>
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">🧭</span>
+              <div>
+                <h4 style="margin:0">أداة فحص الفجوة</h4>
+                <a href="physio.html#gap-check">العلاج الطبيعي والتأهيل — بطاقة فجوة في دقيقة</a>
               </div>
             </div>
             <div class="channel">
