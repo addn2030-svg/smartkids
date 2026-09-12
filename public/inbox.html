@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة الرسائل — SmartKids</title>
+<meta name="description" content="لوحة مباشرة تعرض كل طلبات التواصل المسجّلة في خادم الموقع، مع إحصاءات حسب المجال ونوع الطلب.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#060913">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<div class="orb orb--violet"></div>
+<div class="orb orb--sky"></div>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="/index.html">
+      <span class="brand__mark" aria-hidden="true">✦</span>
+      <span class="brand__text"><span class="brand__name">SmartKids</span><span class="brand__sub">لوحة الرسائل</span></span>
+    </a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="القائمة">☰</button>
+    <nav class="nav__links" id="navLinks" aria-label="التنقّل الرئيسي">
+      <a href="/index.html">الرئيسية</a>
+      <a href="/contact.html">تواصل معنا</a>
+      <a href="/inbox.html" class="is-active">لوحة الرسائل</a>
+      <a class="btn btn--primary btn--sm" href="/contact.html">طلب جديد</a>
+    </nav>
+  </div>
+</header>
+
+<main class="section">
+  <div class="wrap">
+    <div class="section__head">
+      <div class="eyebrow">مربوطة بالخادم مباشرة</div>
+      <h1 style="font-size:clamp(25px,3.2vw,38px)">لوحة الرسائل والطلبات</h1>
+      <p class="lead">كل طلب يُرسل من <a href="/contact.html">صفحة التواصل</a> يُخزَّن في <code>data/messages.json</code> ويظهر هنا لحظياً مع رقم تذكرة وحالة.</p>
+    </div>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="stat__value" id="statTotal">0</div><div class="stat__label">إجمالي الطلبات المسجّلة</div></div>
+      <div class="stat"><div class="stat__value" id="statShown">0</div><div class="stat__label">النتائج المعروضة</div></div>
+      <div class="stat"><div class="stat__value" id="statTopDomain">—</div><div class="stat__label">المجال الأكثر طلباً</div></div>
+      <div class="stat"><div class="stat__value" id="statLast">—</div><div class="stat__label">آخر طلب</div></div>
+    </div>
+
+    <div class="filters">
+      <input type="search" id="search" placeholder="بحث بالاسم أو البريد أو النص…" aria-label="بحث">
+      <select id="domainFilter" aria-label="تصفية بالمجال">
+        <option value="">كل المجالات</option>
+        <option value="مجال صحي">مجال صحي</option>
+        <option value="مجال تقني">مجال تقني</option>
+        <option value="منصة تعليمية">منصة تعليمية</option>
+        <option value="حلول أتمتة وبناء أنظمة">حلول أتمتة وبناء أنظمة</option>
+        <option value="أخرى">أخرى</option>
+      </select>
+      <button class="btn btn--sm" type="button" id="refreshBtn">تحديث ↻</button>
+      <a class="btn btn--sm btn--ghost" href="/api/export.md">تصدير Markdown</a>
+      <a class="btn btn--sm btn--ghost" href="/api/messages" target="_blank" rel="noopener">JSON الخام</a>
+      <span class="tiny muted" id="lastSync"></span>
+    </div>
+
+    <div id="messages" aria-live="polite"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <p class="small" style="margin:0">SmartKids — لوحة متابعة الطلبات.</p>
+    <nav class="footer__links" aria-label="روابط التذييل">
+      <a href="/index.html">الرئيسية</a>
+      <a href="/contact.html">تواصل</a>
+      <a href="/api/health">حالة الخادم</a>
+    </nav>
+    <p class="tiny" style="margin:0">© <span id="year"></span> SmartKids</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/assets/app.js" defer></script>
+</body>
+</html>
