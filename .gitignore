@@ -1,0 +1,10 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+.env
+.env.local
+
+# بيانات الرسائل المحلية (تُنشأ وقت التشغيل)
+data/*.json
+data/*.log
+!data/.gitkeep

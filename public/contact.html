@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تواصل معنا — SmartKids | ابدأ من الفجوة</title>
+<meta name="description" content="صفحة التواصل: أرسل الضجيج الذي ترصده في سوقك، ونعيد إليك باسم القلق غير المعلن ومنه نبني الجسر والحملة (Resonance Loop).">
+<meta name="theme-color" content="#060913">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="orb orb--mint"></div>
+<div class="orb orb--violet"></div>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">✦</span>
+      <span class="brand__text"><span class="brand__name">SmartKids</span><span class="brand__sub">صفحة التواصل</span></span>
+    </a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="القائمة">☰</button>
+    <nav class="nav__links" id="navLinks" aria-label="التنقّل الرئيسي">
+      <a href="index.html">الرئيسية</a>
+      <a href="index.html#layers">تفكيك الطبقات</a>
+      <a href="index.html#loop">الخوارزمية</a>
+      <a href="contact.html" class="is-active">تواصل معنا</a>
+      <a href="inbox.html">لوحة الرسائل</a>
+    </nav>
+  </div>
+</header>
+
+<main class="section">
+  <div class="wrap">
+    <div class="section__head">
+      <div class="eyebrow">تواصل مرتبط فعلياً</div>
+      <h1 style="font-size:clamp(26px,3.4vw,40px)">أرسل الفجوة… ونحن نبني الجسر</h1>
+      <p class="lead">املأ النموذج، وسيُسجَّل طلبك فوراً في خادم الموقع ويظهر في <a href="inbox.html">لوحة الرسائل</a> مع رقم تذكرة. يمكنك أيضاً إرساله مباشرة عبر واتساب أو البريد.</p>
+    </div>
+
+    <div class="cards cards--2" style="align-items:start">
+
+      <!-- ============================ النموذج ============================ -->
+      <div class="form-shell">
+        <!-- بطاقة فحص الفجوة: تُعبَّأ تلقائياً عند القدوم من physio.html#gap-check -->
+        <div class="profile-box" id="gapCardBox" hidden>
+          <div class="profile-box__head">
+            <span class="channel__icon" aria-hidden="true">🧭</span>
+            <div>
+              <h4>ملف الحالة — من أداة فحص الفجوة</h4>
+              <p class="tiny muted" style="margin:0">نُقل من <a href="physio.html#gap-check">فحص الفجوة</a> (العلاج الطبيعي والتأهيل). راجعه وعدّله قبل الإرسال — وهو مخرَج تحليلي لا تشخيص طبي.</p>
+            </div>
+          </div>
+          <dl class="summary" id="gapCardList"></dl>
+          <div class="cta-row" style="margin-top:14px">
+            <button class="btn btn--sm btn--ghost" type="button" id="gapCardClear">إزالة الملف</button>
+            <a class="btn btn--sm btn--ghost" href="physio.html#gap-check">إعادة الفحص</a>
+          </div>
+        </div>
+
+        <div class="alert alert--err" id="formAlert" role="alert" hidden></div>
+
+        <form id="contactForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">الاسم <span class="req">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="name" placeholder="مثال: عبدالله المنصور" required>
+              <span class="error-msg" data-error-for="name"></span>
+            </div>
+
+            <div class="field">
+              <label for="email">البريد الإلكتروني <span class="req">*</span></label>
+              <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" required>
+              <span class="error-msg" data-error-for="email"></span>
+            </div>
+
+            <div class="field">
+              <label for="phone">رقم الجوال / واتساب <span class="muted tiny">(اختياري)</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+966 5X XXX XXXX">
+              <span class="error-msg" data-error-for="phone"></span>
+            </div>
+
+            <div class="field">
+              <label for="domain">المجال أو المنتج <span class="req">*</span></label>
+              <select id="domain" name="domain" required>
+                <option value="">— اختر المجال —</option>
+                <option value="مجال صحي">مجال صحي</option>
+                <option value="مجال تقني">مجال تقني</option>
+                <option value="منصة تعليمية">منصة تعليمية</option>
+                <option value="حلول أتمتة وبناء أنظمة">حلول أتمتة وبناء أنظمة</option>
+                <option value="أخرى">أخرى</option>
+              </select>
+              <span class="error-msg" data-error-for="domain"></span>
+            </div>
+
+            <div class="field">
+              <label for="requestType">نوع الطلب</label>
+              <select id="requestType" name="requestType">
+                <option value="تشخيص سريع (Sensemaking)">تشخيص سريع — فهم وتسمية الفجوة</option>
+                <option value="حملة كاملة (Resonance Loop)">حملة كاملة — الأبواب الأربعة</option>
+                <option value="نظام متكامل (Integrated System)">نظام متكامل — من البداية للنهاية</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="budget">الميزانية التقديرية <span class="muted tiny">(اختياري)</span></label>
+              <select id="budget" name="budget">
+                <option value="">— غير محدّدة بعد —</option>
+                <option value="أقل من 5,000">أقل من 5,000</option>
+                <option value="5,000 – 20,000">5,000 – 20,000</option>
+                <option value="20,000 – 75,000">20,000 – 75,000</option>
+                <option value="أكثر من 75,000">أكثر من 75,000</option>
+              </select>
+            </div>
+
+            <div class="field field--full">
+              <label for="surfaceNoise">الضجيج الظاهر في سوقك <span class="muted tiny">(ما يقوله الناس بصوت عالٍ)</span></label>
+              <textarea id="surfaceNoise" name="surfaceNoise" rows="3" placeholder="مثال: «أسرع تطبيق»، «خطة غذائية في أسبوع»، «دخل سلبي»…"></textarea>
+              <span class="hint">اكتب الشعارات والكلمات المفتاحية الأكثر تكراراً في مجالك.</span>
+            </div>
+
+            <div class="field field--full">
+              <label for="silentPain">القلق غير المعلن / الفجوة <span class="req">*</span></label>
+              <textarea id="silentPain" name="silentPain" rows="5" required placeholder="ما الذي يشعر به جمهورك فعلاً ولا يقوله؟ ما الخوف الذي لم يُكتب في التعليقات؟"></textarea>
+              <span class="hint">هذا هو حقل النواة الصلبة: 15 حرفاً على الأقل — كلما كان أدق، كان الجسر أقوى.</span>
+              <span class="error-msg" data-error-for="silentPain"></span>
+            </div>
+
+            <div class="field field--full">
+              <label class="checkbox">
+                <input type="checkbox" id="consent" name="consent" required>
+                <span>أوافق على تسجيل طلبي والتواصل معي عبر البريد أو واتساب بخصوص هذا الطلب. <span class="req">*</span></span>
+              </label>
+              <span class="error-msg" data-error-for="consent"></span>
+            </div>
+
+            <!-- فخّ للروبوتات: لا يملؤه المستخدم -->
+            <div class="hp" aria-hidden="true">
+              <label for="website">الموقع</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit" id="submitBtn">إرسال الطلب ←</button>
+            <button class="btn btn--ghost" type="button" id="whatsappBtn">إرسال عبر واتساب</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="copyBtn">نسخ الملخص</button>
+            <button class="btn btn--ghost btn--sm" type="reset" id="resetBtn">تفريغ</button>
+            <span class="form-note" id="formNote">يُسجَّل الطلب عبر <code>/api/contact</code> · ردّ خلال 24 ساعة</span>
+          </div>
+        </form>
+
+        <!-- بطاقة النجاح -->
+        <div class="success-card" id="successCard" hidden>
+          <div class="success-card__icon" aria-hidden="true">✓</div>
+          <h2 style="margin-bottom:6px">وصل الطلب ورُبط بالخادم</h2>
+          <p class="muted">احتفظ برقم التذكرة لمتابعة الحالة في لوحة الرسائل:</p>
+          <div class="ticket" id="ticketId">—</div>
+          <p class="tiny muted" id="successMeta"></p>
+          <div class="cta-row" style="justify-content:center">
+            <a class="btn btn--primary" href="inbox.html">عرض الطلب في لوحة الرسائل ←</a>
+            <button class="btn btn--ghost" type="button" id="againBtn">إرسال طلب آخر</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================ العمود الجانبي ============================ -->
+      <div>
+        <div class="form-shell" style="margin-bottom:20px">
+          <h3>قنوات التواصل المباشرة</h3>
+          <p class="muted small">إن كان الموضوع عاجلاً، اختر القناة الأسرع لك — الطلب سيصل بكل الأحوال إلى نفس السجل.</p>
+          <div class="channels">
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">✉️</span>
+              <div>
+                <h4 style="margin:0">البريد الإلكتروني</h4>
+                <a href="mailto:hello@smartkids.sa?subject=%D8%B7%D9%84%D8%A8%20%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%E2%80%94%20SmartKids">hello@smartkids.sa</a>
+              </div>
+            </div>
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">💬</span>
+              <div>
+                <h4 style="margin:0">واتساب</h4>
+                <a href="https://wa.me/966500000000" target="_blank" rel="noopener">محادثة فورية</a>
+              </div>
+            </div>
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">🧭</span>
+              <div>
+                <h4 style="margin:0">أداة فحص الفجوة</h4>
+                <a href="physio.html#gap-check">العلاج الطبيعي والتأهيل — بطاقة فجوة في دقيقة</a>
+              </div>
+            </div>
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">📊</span>
+              <div>
+                <h4 style="margin:0">سجل الطلبات</h4>
+                <a href="inbox.html">لوحة الرسائل المباشرة</a>
+              </div>
+            </div>
+            <div class="channel">
+              <span class="channel__icon" aria-hidden="true">🔌</span>
+              <div>
+                <h4 style="margin:0">واجهة البيانات</h4>
+                <a href="/api/messages">GET /api/messages</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-shell">
+          <h3>ملخّص طلبك الآن</h3>
+          <p class="muted small">يتحدّث فورياً أثناء الكتابة — انسخه أو أرسله عبر واتساب كما هو.</p>
+          <div class="summary">
+            <dl id="summaryList">
+              <dt>المجال</dt><dd data-sum="domain">—</dd>
+              <dt>نوع الطلب</dt><dd data-sum="requestType">—</dd>
+              <dt>الاسم</dt><dd data-sum="name">—</dd>
+              <dt>البريد</dt><dd data-sum="email">—</dd>
+              <dt>الضجيج</dt><dd data-sum="surfaceNoise">—</dd>
+              <dt>الفجوة</dt><dd data-sum="silentPain">—</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="form-shell" style="margin-top:20px">
+          <h3>ماذا يحدث بعد الإرسال؟</h3>
+          <div class="steps" style="grid-template-columns:1fr; gap:12px">
+            <div class="step" style="padding:16px 18px">
+              <div class="step__badge"><span>1</span> المرآة</div>
+              <p class="muted small" style="margin:0">نعيد صياغة ما كتبته بلغةٍ تُشعره بأننا فهمنا وضعه.</p>
+            </div>
+            <div class="step" style="padding:16px 18px">
+              <div class="step__badge"><span>2</span> الصدمة الفكرية</div>
+              <p class="muted small" style="margin:0">نكشف الخلل في النموذج السائد، لا في جهد الجمهور.</p>
+            </div>
+            <div class="step" style="padding:16px 18px">
+              <div class="step__badge"><span>3</span> الإطار الجديد</div>
+              <p class="muted small" style="margin:0">خريطة طريق قابلة للقياس تُعيد ترتيب الفوضى.</p>
+            </div>
+            <div class="step card--accent" style="padding:16px 18px">
+              <div class="step__badge"><span>4</span> الحل</div>
+              <p class="muted small" style="margin:0">منتجك كمحرك حتمي داخل الخريطة.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <p class="small" style="margin:0">SmartKids — من الضجيج إلى النواة الصلبة.</p>
+    <nav class="footer__links" aria-label="روابط التذييل">
+      <a href="index.html">الرئيسية</a>
+      <a href="index.html#loop">الخوارزمية</a>
+      <a href="inbox.html">لوحة الرسائل</a>
+      <a href="/api/export.md">تصدير السجل (Markdown)</a>
+    </nav>
+    <p class="tiny" style="margin:0">© <span id="year"></span> SmartKids</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/app.js" defer></script>
+</body>
+</html>
