@@ -28,6 +28,13 @@ class El {
     });
   }
 
+  get id() { return this._attrs.id || ''; }
+  set id(v) { this._attrs.id = String(v); }
+  get href() { return this._attrs.href || ''; }
+  set href(v) { this._attrs.href = String(v); }
+  get src() { return this._attrs.src || ''; }
+  set src(v) { this._attrs.src = String(v); }
+
   get className() { return [...this._classes].join(' '); }
   set className(v) { this._classes = new Set(String(v).split(/\s+/).filter(Boolean)); }
 
@@ -68,13 +75,15 @@ class El {
   dispatch(type, target) {
     let node = this;
     while (node) {
-      (node._listeners[type] || []).forEach((fn) => fn({ target: target || this, preventDefault() {} }));
+      const current = node;
+      (node._listeners[type] || []).forEach((fn) => fn({ target: target || this, currentTarget: current, preventDefault() {} }));
       node = node.parentNode;
     }
   }
 
   setAttribute(k, v) {
     this._attrs[k] = String(v);
+    if (k === 'class') this._classes = new Set(String(v).split(/\s+/).filter(Boolean));
     if (k === 'hidden') this.hidden = true;
   }
   getAttribute(k) {
@@ -83,7 +92,27 @@ class El {
     return k in this._attrs ? this._attrs[k] : null;
   }
   hasAttribute(k) { return k in this._attrs; }
-  matches(sel) { return matchSimple(this, sel); }
+
+  /* واجهات مستخدمة في الصفحة لكن لا معنى لها في الاختبار */
+  focus() {}
+  blur() {}
+  scrollIntoView() {}
+  reset() {
+    walk(this, (n) => {
+      if (n.tagName === 'INPUT') { if (n._attrs.type === 'checkbox' || n._attrs.type === 'radio') delete n._attrs.checked; else n._attrs.value = ''; }
+      if (n.tagName === 'TEXTAREA' || n.tagName === 'SELECT') n._attrs.value = '';
+    });
+  }
+  get firstChild() { return this.children[0] || null; }
+  matches(sel) { return matchComplex(this, sel); }
+  closest(sel) {
+    let node = this;
+    while (node) {
+      if (matchComplex(node, sel)) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
   querySelectorAll(sel) {
     const out = [];
     walk(this, (n) => { if (matchComplex(n, sel)) out.push(n); });
@@ -95,8 +124,10 @@ class El {
 function walk(node, fn) { node.children.forEach((c) => { fn(c); walk(c, fn); }); }
 
 function matchSimple(el, sel) {
-  const tokens = sel.match(/(^[a-zA-Z]+|\.[\w-]+|\[[^\]]+\]|:checked)/g) || [];
+  const tokens = sel.match(/(^[a-zA-Z]+|#[\w-]+|\.[\w-]+|\[[^\]]+\]|:checked)/g) || [];
+  if (!tokens.length) return false; // محدّد غير مدعوم لا يجب أن يطابق كل شيء
   return tokens.every((tk) => {
+    if (tk.startsWith('#')) return el.getAttribute('id') === tk.slice(1);
     if (tk.startsWith('.')) return el._classes.has(tk.slice(1));
     if (tk === ':checked') return !!el.checked;
     if (tk.startsWith('[')) {

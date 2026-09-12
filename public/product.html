@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>صفحة منتج — لمسة | متجر التأهيل</title>
+<meta name="description" content="صفحة منتج لمسة: مرجع تدريب قاع الحوض ووصفات التأهيل، مع خيارات التوصيل والتقسيط والسلة والتقييمات.">
+<meta name="theme-color" content="#060913">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="orb orb--mint"></div>
+<div class="orb orb--violet"></div>
+<div class="orb orb--sky"></div>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">✦</span>
+      <span class="brand__text"><span class="brand__name">لمسة</span><span class="brand__sub">متجر التأهيل</span></span>
+    </a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="القائمة">☰</button>
+    <nav class="nav__links" id="navLinks" aria-label="التنقّل الرئيسي">
+      <a href="index.html">الرئيسية</a>
+      <a href="physio.html">علاج طبيعي منزلي</a>
+      <a href="product.html" class="is-active">المنتج</a>
+      <a href="#qa">الأسئلة</a>
+      <a href="inbox.html">لوحة الرسائل</a>
+      <button class="btn btn--sm" type="button" id="cartOpenBtn" aria-label="عرض السلة">
+        🛒 السلة <span class="cart-count" id="navCartCount" hidden>0</span>
+      </button>
+      <a class="btn btn--primary btn--sm" href="#checkout">إتمام الطلب</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============================ مسار التنقّل ============================ -->
+  <div class="wrap" style="padding-top:18px">
+    <nav class="breadcrumbs" aria-label="مسار التنقّل">
+      <a href="index.html">الرئيسية</a><span aria-hidden="true">›</span>
+      <a href="product.html#related">متجر التأهيل</a><span aria-hidden="true">›</span>
+      <span id="crumbCategory">كتب طبية</span><span aria-hidden="true">›</span>
+      <span class="muted" id="crumbTitle">—</span>
+    </nav>
+    <div class="badge-line" style="margin:14px 0 0">
+      <span class="badge-soft badge-soft--gold">نسخة عرض — البيانات في <code>config/catalog.json</code> قابلة للاستبدال ببياناتك</span>
+      <span class="badge-soft badge-soft--mint">صفحة منتج كاملة الوظائف: سلة · توصيل · تقسيط · تقييمات</span>
+    </div>
+  </div>
+
+  <!-- =============================== بطاقة المنتج =============================== -->
+  <section class="section section--tight">
+    <div class="wrap pdp" id="pdp" aria-busy="true">
+      <div class="pdp__media">
+        <div class="gallery">
+          <div class="gallery__main" id="galleryMain" aria-live="polite">
+            <span class="pill" id="productBadge" hidden></span>
+            <div class="cover" id="coverMain" aria-hidden="true">—</div>
+            <button class="gallery__zoom" type="button" id="zoomBtn" aria-label="تكبير الصورة">🔍 تكبير</button>
+          </div>
+          <div class="gallery__thumbs" id="galleryThumbs" role="tablist" aria-label="صور المنتج"></div>
+        </div>
+        <div class="gallery__note tiny muted" id="coverNote">صورة توضيحية — ضع صورة المنتج الرسمية هنا.</div>
+      </div>
+
+      <div class="pdp__info">
+        <div class="pdp__brandline">
+          <span class="pill" id="productPublisher">—</span>
+          <span class="tiny muted">رقم الصنف <strong id="productSku">—</strong> · المرجع <strong id="productIsbn" dir="ltr">—</strong></span>
+        </div>
+
+        <h1 class="pdp__title" id="productTitle">—</h1>
+        <p class="pdp__subtitle muted" id="productSubtitle"></p>
+
+        <div class="rating-row">
+          <span class="stars" id="ratingStars" aria-hidden="true"></span>
+          <strong id="ratingValue">—</strong>
+          <a href="#qa" class="small" id="ratingCount">—</a>
+          <span class="pill" id="productStock">—</span>
+        </div>
+
+        <div class="price-block">
+          <div class="price-block__main">
+            <span class="price" id="productPrice">—</span>
+            <span class="price__unit tiny muted">شامل ضريبة القيمة المضافة · وحدة البيع: <span id="productUnit">—</span></span>
+          </div>
+          <div class="price-block__side">
+            <span class="compare" id="productCompare" hidden>—</span>
+            <span class="installment" id="productInstallment">—</span>
+          </div>
+        </div>
+
+        <ul class="highlights" id="productHighlights"></ul>
+
+        <div class="option-group">
+          <h4 class="option-group__title">التنسيق</h4>
+          <div class="quiz__options" id="formatOptions"></div>
+        </div>
+
+        <div class="option-group">
+          <h4 class="option-group__title">حدّد خيار التوصيل</h4>
+          <div class="delivery-list" id="deliveryList"></div>
+        </div>
+
+        <div class="option-group">
+          <h4 class="option-group__title">تحقّق من التوفّر في منطقتك</h4>
+          <div class="availability">
+            <input type="text" id="availabilityCity" placeholder="اكتب مدينتك أو رقم الحي" aria-label="المدينة أو الحي">
+            <button class="btn btn--sm" type="button" id="availabilityBtn">تحقّق</button>
+            <p class="tiny" id="availabilityResult" role="status"></p>
+          </div>
+        </div>
+
+        <div class="buy-row">
+          <div class="qty" role="group" aria-label="الكمية">
+            <button type="button" class="qty__btn" id="qtyMinus" aria-label="تقليل">−</button>
+            <input type="number" id="qtyInput" value="1" min="1" max="50" inputmode="numeric" aria-label="الكمية">
+            <button type="button" class="qty__btn" id="qtyPlus" aria-label="زيادة">+</button>
+          </div>
+          <button class="btn btn--primary btn--block" type="button" id="addToCartBtn">أضف إلى السلة</button>
+          <button class="btn btn--ghost" type="button" id="buyNowBtn">اشترِ الآن</button>
+        </div>
+
+        <div class="pdp__actions">
+          <button class="btn btn--sm btn--ghost" type="button" id="favBtn" aria-pressed="false">♡ المفضّلة</button>
+          <button class="btn btn--sm btn--ghost" type="button" id="compareBtn">⇄ مقارنة</button>
+          <button class="btn btn--sm btn--ghost" type="button" id="shareBtn">↗ مشاركة</button>
+          <span class="tiny muted" id="pdpNote">الدفع عند الإتمام يمرّ عبر <code>POST /api/orders</code> ويُخزَّن في لوحة الطلبات.</span>
+        </div>
+
+        <ul class="trust">
+          <li><span aria-hidden="true">↩</span> استبدال خلال 7 أيام <em class="tiny muted">إن لم يكن مطابقاً للوصف</em></li>
+          <li><span aria-hidden="true">🔒</span> تسوّق آمن <em class="tiny muted">دفع موثّق عند الاستلام أو تحويل</em></li>
+          <li><span aria-hidden="true">✓</span> أصلي ومضمون <em class="tiny muted">من الناشر أو مورّد معتمد</em></li>
+          <li><span aria-hidden="true">🚚</span> توصيل سريع <em class="tiny muted">24 – 48 ساعة داخل المدن الرئيسية</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================ التبويبات ================================ -->
+  <section class="section section--tight" id="qa">
+    <div class="wrap">
+      <div class="tabs" role="tablist" aria-label="تفاصيل المنتج">
+        <button class="tab is-active" type="button" role="tab" aria-selected="true" data-tab="desc" id="tab-desc" aria-controls="panel-desc">الوصف</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="specs" id="tab-specs" aria-controls="panel-specs">المواصفات</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="ship" id="tab-ship" aria-controls="panel-ship">الشحن والإرجاع</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="reviews" id="tab-reviews" aria-controls="panel-reviews">التقييمات</button>
+      </div>
+
+      <div class="tab-panels">
+        <div class="tab-panel is-active" id="panel-desc" role="tabpanel" aria-labelledby="tab-desc">
+          <div class="cards cards--2">
+            <div>
+              <h3>عن المنتج</h3>
+              <div id="productDescription"></div>
+            </div>
+            <div>
+              <h3>لمن هذا المنتج؟</h3>
+              <ul class="checklist" id="productAudience"></ul>
+              <div class="disclaimer" style="margin-top:16px">
+                <strong>تنبيه:</strong> المحتوى العلمي للأدلة والمراجع لا يُغني عن التقييم المباشر من مختص مرخّص. المنتجات المعروضة هنا للاستخدام المساعد داخل البرنامج العلاجي.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-specs" role="tabpanel" aria-labelledby="tab-specs" hidden>
+          <div class="table-wrap">
+            <table>
+              <caption class="tiny muted" style="text-align:start; padding:12px 16px">المواصفات التفصيلية كما وردت من الناشر/المورّد.</caption>
+              <tbody id="specsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-ship" role="tabpanel" aria-labelledby="tab-ship" hidden>
+          <div class="cards cards--3">
+            <article class="card">
+              <h3>خيارات التوصيل</h3>
+              <ul class="checklist" id="shippingOptions"></ul>
+            </article>
+            <article class="card">
+              <h3>مدّة التسليم</h3>
+              <ul class="checklist">
+                <li>المدن الرئيسية: 24 – 48 ساعة عمل.</li>
+                <li>باقي المناطق: 2 – 5 أيام عمل.</li>
+                <li>المنتجات الرقمية: تحميل فوري بعد تأكيد الطلب.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>الإرجاع والاستبدال</h3>
+              <ul class="checklist">
+                <li>إرجاع خلال 7 أيام للمنتج بحالته الأصلية.</li>
+                <li>المنتجات الرقمية والمستلزمات الصحية غير قابلة للإرجاع بعد الفتح.</li>
+                <li>التوصيل المجاني لا يُسترد عند الإرجاع الجزئي.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-reviews" role="tabpanel" aria-labelledby="tab-reviews" hidden>
+          <div class="reviews">
+            <aside class="reviews__summary">
+              <div class="reviews__score"><strong id="reviewsAvg">—</strong><span class="stars" id="reviewsStars" aria-hidden="true"></span></div>
+              <p class="tiny muted" id="reviewsCountLabel">—</p>
+              <div class="bars" id="reviewsBars"></div>
+              <button class="btn btn--sm btn--ghost" type="button" id="writeReviewBtn">اكتب تقييماً</button>
+            </aside>
+
+            <div>
+              <form class="review-form" id="reviewForm" hidden>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="reviewName">الاسم</label>
+                    <input type="text" id="reviewName" placeholder="اسمك كما سيظهر">
+                  </div>
+                  <div class="field">
+                    <label for="reviewRating">التقييم</label>
+                    <select id="reviewRating">
+                      <option value="5">5 — ممتاز</option>
+                      <option value="4">4 — جيد جداً</option>
+                      <option value="3">3 — جيد</option>
+                      <option value="2">2 — مقبول</option>
+                      <option value="1">1 — ضعيف</option>
+                    </select>
+                  </div>
+                  <div class="field field--full">
+                    <label for="reviewText">رأيك</label>
+                    <textarea id="reviewText" rows="3" placeholder="ما الذي أفادك؟ وما الذي تحتاج توضيحاً فيه؟"></textarea>
+                    <span class="error-msg" data-error-for="reviewText"></span>
+                  </div>
+                </div>
+                <div class="cta-row">
+                  <button class="btn btn--primary btn--sm" type="submit">نشر التقييم</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="cancelReview">إلغاء</button>
+                </div>
+              </form>
+
+              <div id="reviewsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ منتجات مقترحة ============================ -->
+  <section class="section section--tight" id="related">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div class="eyebrow">تكامل النظام لا أداة منفصلة</div>
+        <h2>يكمّل البرنامج في البيت</h2>
+        <p class="lead">اختيارات نستخدمها فعلاً داخل الزيارات: الدليل الرقمي، مستلزمات التدريب، ودعم الجلوس.</p>
+      </div>
+      <div class="rail" id="relatedRail"></div>
+
+      <div class="section__head" style="margin-top:44px">
+        <div class="eyebrow">حسب التصنيف</div>
+        <h2>الكتب والمستلزمات الطبية</h2>
+        <p class="lead">كل منتج يحمل بياناته الكاملة: المرجع، الناشر، والمواصفات — بدل الوصف التسويقي العام.</p>
+      </div>
+      <div class="rail" id="categoryRail"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <div class="brand" style="margin-bottom:10px">
+        <span class="brand__mark" aria-hidden="true">✦</span>
+        <span class="brand__text"><span class="brand__name">لمسة</span><span class="brand__sub">متجر التأهيل · لمسة تُعيد البسمة</span></span>
+      </div>
+      <p class="small" style="margin:0">صفحة منتج كاملة الوظائف — مبنية بنصوص وتصميم أصليين لعلامتك.</p>
+    </div>
+    <nav class="footer__links" aria-label="روابط التذييل">
+      <a href="index.html">الرئيسية</a>
+      <a href="physio.html">العلاج المنزلي</a>
+      <a href="contact.html">تواصل</a>
+      <a href="/api/catalog" target="_blank" rel="noopener">واجهة الكتالوج</a>
+      <a href="/api/orders" target="_blank" rel="noopener">واجهة الطلبات</a>
+    </nav>
+    <p class="tiny" style="margin:0">© <span id="year"></span> لمسة</p>
+  </div>
+</footer>
+
+<!-- ============================== السلة الجانبية ============================== -->
+<div class="drawer-overlay" id="cartOverlay" hidden></div>
+<aside class="drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-hidden="true">
+  <header class="drawer__head">
+    <h3 style="margin:0">سلة المشتريات <span class="pill" id="cartItemsCount">0</span></h3>
+    <button class="btn btn--sm btn--ghost" type="button" id="cartCloseBtn" aria-label="إغلاق السلة">✕</button>
+  </header>
+
+  <div class="drawer__body" id="cartBody"></div>
+
+  <footer class="drawer__foot" id="cartFoot" hidden>
+    <div class="totals" id="cartTotals"></div>
+    <button class="btn btn--primary btn--block" type="button" id="checkoutBtn">إتمام الطلب ←</button>
+    <button class="btn btn--ghost btn--block btn--sm" type="button" id="continueBtn">مواصلة التسوّق</button>
+  </footer>
+</aside>
+
+<!-- ============================== إتمام الطلب ============================== -->
+<section class="section" id="checkout" hidden>
+  <div class="wrap wrap--narrow">
+    <div class="form-shell">
+      <h2>إتمام الطلب</h2>
+      <p class="muted small">لا دفع إلكتروني في هذه النسخة: يُسجَّل الطلب في النظام ونتواصل معك لتأكيده وتحديد طريقة الدفع.</p>
+      <div class="alert alert--err" id="orderAlert" role="alert" hidden></div>
+
+      <form id="orderForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="orderName">الاسم <span class="req">*</span></label>
+            <input type="text" id="orderName" name="name" autocomplete="name" required>
+            <span class="error-msg" data-error-for="name"></span>
+          </div>
+          <div class="field">
+            <label for="orderPhone">الجوال <span class="req">*</span></label>
+            <input type="tel" id="orderPhone" name="phone" autocomplete="tel" placeholder="+966 5X XXX XXXX" required>
+            <span class="error-msg" data-error-for="phone"></span>
+          </div>
+          <div class="field">
+            <label for="orderCity">المدينة <span class="req">*</span></label>
+            <input type="text" id="orderCity" name="city" required>
+            <span class="error-msg" data-error-for="city"></span>
+          </div>
+          <div class="field">
+            <label for="orderDistrict">الحي</label>
+            <input type="text" id="orderDistrict" name="district">
+          </div>
+          <div class="field field--full">
+            <label for="orderAddress">العنوان التفصيلي <span class="muted tiny">(مطلوب للتوصيل)</span></label>
+            <input type="text" id="orderAddress" name="address" placeholder="الشارع، رقم المبنى، أقرب معلم">
+            <span class="error-msg" data-error-for="address"></span>
+          </div>
+          <div class="field field--full">
+            <label for="orderNotes">ملاحظات للفريق <span class="muted tiny">(اختياري)</span></label>
+            <textarea id="orderNotes" name="notes" rows="2" placeholder="مثال: اتصل قبل الوصول بـ 30 دقيقة"></textarea>
+          </div>
+        </div>
+
+        <div class="summary" style="margin-top:16px" id="checkoutSummary"></div>
+
+        <div class="form-actions">
+          <button class="btn btn--primary" type="submit" id="placeOrderBtn">تأكيد الطلب ←</button>
+          <a class="btn btn--ghost" href="contact.html">تحتاج مساعدة؟ تواصل معنا</a>
+          <span class="form-note">يُخزَّن الطلب في <code>data/orders.json</code></span>
+        </div>
+      </form>
+
+      <div class="success-card" id="orderSuccess" hidden>
+        <div class="success-card__icon" aria-hidden="true">✓</div>
+        <h2 style="margin-bottom:6px">تم تسجيل طلبك</h2>
+        <p class="muted">احتفظ برقم الطلب — سيتواصل معك الفريق لتأكيد التوصيل وطريقة الدفع.</p>
+        <div class="ticket" id="orderTicket">—</div>
+        <p class="tiny muted" id="orderMeta"></p>
+        <div class="cta-row" style="justify-content:center">
+          <a class="btn btn--primary" id="orderWhatsapp" href="#" target="_blank" rel="noopener">أرسل تأكيد الطلب على واتساب</a>
+          <button class="btn btn--ghost" type="button" id="newOrderBtn">طلب جديد</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sticky-buy" id="stickyBuy" hidden>
+  <div class="sticky-buy__info">
+    <strong id="stickyTitle">—</strong>
+    <span class="tiny muted" id="stickyPrice">—</span>
+  </div>
+  <button class="btn btn--primary btn--sm" type="button" id="stickyAddBtn">أضف إلى السلة</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/product.js" defer></script>
+</body>
+</html>

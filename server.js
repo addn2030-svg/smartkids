@@ -22,7 +22,9 @@ const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const DATA_DIR = path.join(ROOT, 'data');
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
+const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 const LOG_FILE = path.join(DATA_DIR, 'contact.log');
+const CATALOG_FILE = path.join(ROOT, 'config', 'catalog.json');
 
 const MAX_BODY = 64 * 1024; // 64KB
 const RATE_WINDOW_MS = 60 * 1000;
@@ -108,10 +110,12 @@ async function parsePayload(req) {
 
 async function ensureStorage() {
   await fsp.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fsp.access(MESSAGES_FILE);
-  } catch {
-    await fsp.writeFile(MESSAGES_FILE, '[]\n', 'utf8');
+  for (const file of [MESSAGES_FILE, ORDERS_FILE]) {
+    try {
+      await fsp.access(file);
+    } catch {
+      await fsp.writeFile(file, '[]\n', 'utf8');
+    }
   }
 }
 
@@ -144,6 +148,27 @@ async function appendMessage(record) {
   });
 }
 
+async function readOrders() {
+  try {
+    const raw = await fsp.readFile(ORDERS_FILE, 'utf8');
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+async function appendOrder(record) {
+  return withLock(async () => {
+    const all = await readOrders();
+    all.push(record);
+    const tmp = `${ORDERS_FILE}.${process.pid}.tmp`;
+    await fsp.writeFile(tmp, `${JSON.stringify(all, null, 2)}\n`, 'utf8');
+    await fsp.rename(tmp, ORDERS_FILE);
+    return all.length;
+  });
+}
+
 /* --------------------------------- الحدود --------------------------------- */
 
 const hits = new Map();
@@ -154,6 +179,42 @@ function rateLimited(ip) {
   hits.set(ip, list);
   if (hits.size > 5000) hits.clear();
   return list.length > RATE_MAX;
+}
+
+/* ------------------------------ كتالوج المنتجات --------------------------- */
+
+let catalogCache = null;
+function loadCatalog() {
+  if (catalogCache) return catalogCache;
+  try {
+    const raw = fs.readFileSync(CATALOG_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    catalogCache = {
+      currency: parsed.currency || 'ر.س',
+      vatIncluded: parsed.vatIncluded !== false,
+      deliveryOptions: Array.isArray(parsed.deliveryOptions) ? parsed.deliveryOptions : [],
+      products: Array.isArray(parsed.products) ? parsed.products : [],
+    };
+  } catch (err) {
+    console.error('[كتالوج] تعذّر قراءة config/catalog.json:', err.message);
+    catalogCache = { currency: 'ر.س', vatIncluded: true, deliveryOptions: [], products: [] };
+  }
+  return catalogCache;
+}
+
+function findProduct(sku) {
+  return loadCatalog().products.find((p) => p.sku === sku || p.id === sku) || null;
+}
+
+function deliveryOption(id) {
+  const list = loadCatalog().deliveryOptions;
+  return list.find((d) => d.id === id) || list[0] || { id: 'pickup', label: 'استلام من العيادة', fee: 0 };
+}
+
+function shippingFee(option, subtotal) {
+  if (!option) return 0;
+  if (typeof option.freeAbove === 'number' && subtotal >= option.freeAbove) return 0;
+  return Math.max(0, Number(option.fee) || 0);
 }
 
 /* ------------------------------- التحقّق ---------------------------------- */
@@ -201,10 +262,73 @@ function validate(payload) {
   return { data, errors, valid: Object.keys(errors).length === 0 };
 }
 
-function makeId() {
+const DELIVERY_IDS = () => loadCatalog().deliveryOptions.map((d) => d.id);
+
+function validateOrder(payload) {
+  const errors = {};
+  const customer = {
+    name: clean(payload.name, 120),
+    phone: clean(payload.phone, 40),
+    city: clean(payload.city, 80),
+    district: clean(payload.district, 120),
+    address: clean(payload.address, 300),
+    notes: clean(payload.notes, 500),
+    email: clean(payload.email, 160).toLowerCase(),
+  };
+
+  if (customer.name.length < 2) errors.name = 'الاسم مطلوب.';
+  if (!/^[+\d\s()-]{6,}$/.test(customer.phone)) errors.phone = 'رقم الجوال غير صحيح.';
+  if (customer.city.length < 2) errors.city = 'المدينة مطلوبة.';
+
+  const requested = Array.isArray(payload.items) ? payload.items : [];
+  if (!requested.length) errors.items = 'السلة فارغة.';
+
+  const items = [];
+  for (const line of requested.slice(0, 20)) {
+    const product = findProduct(clean(line.sku, 60));
+    if (!product) { errors.items = `منتج غير معروف: ${clean(line.sku, 60)}`; continue; }
+    const qty = Math.min(50, Math.max(1, Number(line.qty) || 1));
+    items.push({
+      sku: product.sku,
+      title: product.title,
+      type: product.type || 'product',
+      qty,
+      unitPrice: Number(product.price) || 0,
+      lineTotal: Math.round((Number(product.price) || 0) * qty * 100) / 100,
+    });
+  }
+
+  const deliveryId = clean(payload.delivery, 40) || (loadCatalog().deliveryOptions[0] || {}).id || 'pickup';
+  if (!DELIVERY_IDS().includes(deliveryId)) errors.delivery = 'طريقة التوصيل غير معروفة.';
+  if (deliveryId !== 'pickup' && customer.address.length < 8) errors.address = 'العنوان مطلوب للتوصيل.';
+
+  const subtotal = items.reduce((sum, i) => sum + i.lineTotal, 0);
+  const option = deliveryOption(deliveryId);
+  const shipping = shippingFee(option, subtotal);
+
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0,
+    customer,
+    items,
+    delivery: { id: option.id, label: option.label, fee: shipping },
+    totals: {
+      currency: loadCatalog().currency,
+      vatIncluded: loadCatalog().vatIncluded,
+      subtotal: Math.round(subtotal * 100) / 100,
+      shipping,
+      total: Math.round((subtotal + shipping) * 100) / 100,
+    },
+  };
+}
+
+function stamp() {
   const d = new Date();
-  const stamp = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-  return `SK-${stamp}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+  return `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function makeId(prefix = 'SK') {
+  return `${prefix}-${stamp()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
 }
 
 /* --------------------------- نقاط النهاية (API) --------------------------- */
@@ -222,11 +346,70 @@ async function handleApi(req, res, url) {
   }
 
   if (pathname === '/api/health') {
-    return json(res, 200, { ok: true, service: 'lamsa-contact', time: new Date().toISOString(), uptime: Math.round(process.uptime()) });
+    const catalog = loadCatalog();
+    return json(res, 200, {
+      ok: true,
+      service: 'lamsa-site',
+      time: new Date().toISOString(),
+      uptime: Math.round(process.uptime()),
+      products: catalog.products.length,
+      deliveryOptions: catalog.deliveryOptions.length,
+    });
   }
 
   if (pathname === '/api/meta') {
     return json(res, 200, { domains: DOMAINS, requestTypes: REQUEST_TYPES, serviceModes: SERVICE_MODES });
+  }
+
+  if (pathname === '/api/catalog' && req.method === 'GET') {
+    const catalog = loadCatalog();
+    return json(res, 200, { ok: true, updatedAt: catalog.updatedAt, ...catalog });
+  }
+
+  if (pathname === '/api/orders' && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
+    if (rateLimited(ip)) {
+      return json(res, 429, { ok: false, message: 'محاولات كثيرة — انتظر دقيقة ثم أعد المحاولة.' });
+    }
+
+    let payload;
+    try {
+      payload = await parsePayload(req);
+    } catch (err) {
+      return json(res, err.status || 400, { ok: false, message: err.message });
+    }
+
+    const result = validateOrder(payload);
+    if (!result.valid) {
+      return json(res, 422, { ok: false, message: 'تحقّق من بيانات الطلب.', errors: result.errors });
+    }
+
+    const record = {
+      id: makeId('ORD'),
+      createdAt: new Date().toISOString(),
+      status: 'جديد',
+      customer: result.customer,
+      items: result.items,
+      delivery: result.delivery,
+      totals: result.totals,
+      meta: { ip, userAgent: clean(req.headers['user-agent'], 300) },
+    };
+
+    const total = await appendOrder(record);
+    console.log(`[طلب] ${record.id} — ${record.items.length} صنف — ${record.totals.total} ${record.totals.currency} (الإجمالي: ${total})`);
+    return json(res, 201, { ok: true, id: record.id, createdAt: record.createdAt, totals: record.totals, items: record.items, delivery: record.delivery, message: 'تم تسجيل الطلب.' });
+  }
+
+  if (pathname === '/api/orders' && req.method === 'GET') {
+    const all = await readOrders();
+    const sorted = all.slice().reverse();
+    const revenue = all.reduce((sum, o) => sum + (o.totals ? o.totals.total : 0), 0);
+    return json(res, 200, {
+      ok: true,
+      count: sorted.length,
+      stats: { revenue: Math.round(revenue * 100) / 100, currency: loadCatalog().currency, lastAt: sorted[0] ? sorted[0].createdAt : null },
+      orders: sorted,
+    });
   }
 
   if (pathname === '/api/contact' && req.method === 'POST') {

@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node server.js",
     "build:share": "node tools/build-share.js",
-    "test": "node tools/test-quiz.js public/assets/gap-check.js && node tools/test-quiz.js public/lamsa-physio.html"
+    "test": "node tools/test-quiz.js public/assets/gap-check.js && node tools/test-quiz.js public/lamsa-physio.html && node tools/test-product.js"
   },
   "engines": {
     "node": ">=18"

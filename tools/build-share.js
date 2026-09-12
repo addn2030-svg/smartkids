@@ -58,6 +58,10 @@ html = html.replace('<a href="inbox.html">لوحة الرسائل</a>', '<a href
 html = html.replace(/<a class="btn btn--primary btn--sm" href="contact\.html\?[^"]*">تواصل معنا<\/a>/,
   `<a class="btn btn--primary btn--sm" href="${waBook}" target="_blank" rel="noopener">احجز زيارة ←</a>`);
 
+// رابط المتجر في التنقّل → مراسلة واتساب (لا صفحة متجر في نسخة الملف الواحد)
+html = html.replace('<a href="product.html">متجر التأهيل</a>',
+  `<a href="${waLink('مرحباً، أرغب بالاستفسار عن منتجات متجر لمسة (الكتب والمستلزمات).')}" target="_blank" rel="noopener">المتجر — استفسار</a>`);
+
 // شريط الدعوة في نهاية الصفحة
 html = html.replace(/<a class="btn btn--primary" href="contact\.html\?[^"]*">اطلب[^<]*<\/a>/,
   `<a class="btn btn--primary" href="${waBook}" target="_blank" rel="noopener">اطلب زيارة تقييم منزلية ←</a>`);
